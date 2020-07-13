@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+
+    <title>Editor</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+
+<body>
+
+
+
+    <div class="container">
+        <div class="row">
+            <!-- заголовок -->
+            <div class="h1-wrapp">
+                <h1 id="h1_name" class="title">Editor</h1>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            <div>
+                <!--  боковой список с названиями документов-->
+                <!-- заголовок списка  -->
+
+                <h2 class="documents">Documents List <span style="font-size: 14px">(Alt + click — delete
+                        document)</span>
+                </h2>
+
+
+                <!-- поле ввода, куда пишем название новых документов -->
+                <div id="tdlApp">
+                    <input type="text" class="form-control" placeholder="Create document">
+                    <!-- создаём пока ещё пустой список -->
+                    <div class="tdlDiv">
+                        <ul class="List list-unstyled">
+                            <!-- тут появятся наши названия документов, после добавления -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!--окно редактора, где будет весь текст -->
+            <div>
+
+                <div class="tools">
+                    <div class="tools__cdc">
+                        <button onclick="document.execCommand('copy', false, '');">copy</button>
+                        <button onclick="document.execCommand('cut', false, '');">cut</button>
+                        <button onclick="document.execCommand('delete', false, '');">delete</button>
+                    </div>
+                    <div class="tools__change">
+                        <button onclick="document.execCommand('bold', false, '');"><b>B</b> </button>
+                        <button onclick="document.execCommand('italic', false, '');"> <i>I</i> </button>
+                        <button onclick="document.execCommand('underline', false, '');"> <u>U</u> </button>
+                        <button onclick="document.execCommand('strikeThrough', false, ''); "><s>текст</s> </button>
+                    </div>
+                    <div class="tools__text-color">
+                        <label>Цвет текста:</label>
+                        <input type="color" onchange="document.execCommand ('foreColor', false, this.value);" />
+                    </div>
+                    <div class="tools__text-bg-color">
+                        <label>Заливка:</label>
+                        <input type="color" onchange="document.execCommand ('backColor', false, this.value);" />
+                    </div>
+                    <div class="tools__font-wrapp">
+                        <select onchange="document.execCommand ('fontName', false, this.value);">
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Arial">Arial</option>
+                            <option value="Tahoma">Tahoma</option>
+                        </select>
+                        <select onchange="document.execCommand ('fontSize', false, this.value);">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                        </select>
+                    </div>
+                    <div class="tools__text-format">
+                        <button onclick="document.execCommand('superscript', false, ''); ">X<sup>n</sup></button>
+                        <button onclick="document.execCommand('subscript', false, ''); ">X<sub>n</sub></button>
+                    </div>
+                </div>
+                
+                <div id="editor" contenteditable="true" class="editorSheet">
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+
+    <script>
+      
+        // заводим переменные под наши задачи
+        var List = $('#tdlApp ul');
+        var Mask = 'tdl_';
+
+        //  внутренний номер документа, чтобы связать список и текст в редакторе
+        var N_store;
+        //  нажатие клавиши в редакторе и при каждом нажатии выполняем команду
+        document.addEventListener('keydown', function (e) {
+            //  содержимое  редактора в хранилище, при этом ячейка связана с текущим документом
+            localStorage.setItem(N_store + 'text_in_editor', document.getElementById('editor').innerHTML);
+        });
+
+        // функция, которая берёт из памяти наши документы и делает из них список
+
+        function showTasks() {
+
+            document.getElementById('editor').style.display = "none";
+
+            // узнаём размер хранилища
+            var Storage_size = localStorage.length;
+            // если в хранилище что-то есть…
+            if (Storage_size > 0) {
+                // то берём и добавляем это в список документов 
+                for (var i = 0; i < Storage_size; i++) {
+                    var key = localStorage.key(i);
+
+                    if (key.indexOf(Mask) == 0) {
+                        // запоминаем внутренний номер документа, чтобы правильно показать текст в редакторе
+                        N_store = key[4];
+
+                        // делаем содержимое хранилища элементами списка
+
+                        $('<li></li>').addClass('tdItem')
+                            .attr('data-itemid', key)
+                            .text(localStorage.getItem(key))
+                            .appendTo(List);
+                    }
+                }
+            }
+        }
+
+        // сразу вызываем эту функцию, вдруг в памяти уже остались документы с прошлого раза
+        showTasks();
+
+        // следим, когда пользователь напишет название нового документа в поле ввода и нажмёт Enter
+
+        $('#tdlApp input').on('keydown', function (e) {
+
+            if (e.keyCode != 13) return;
+
+            var str = e.target.value;
+            e.target.value = "";
+            // если в поле ввода было что-то написано — начинаем обрабатывать
+
+            if (str.length > 0) {
+
+                var number_Id = 0;
+
+                List.children().each(function (index, el) {
+
+                    var element_Id = $(el).attr('data-itemid').slice(4);
+
+                    if (element_Id > number_Id)
+
+                        number_Id = element_Id;
+
+                })
+
+                number_Id++;
+
+                // отправляем новый документ сразу в память
+
+                localStorage.setItem(Mask + number_Id, str);
+
+                // готовим для него новое поле редактора
+
+                // берём текущий внутренний номер документа
+
+                N_store = number_Id;
+
+                // отправляем в память 
+
+                localStorage.setItem(N_store + 'text_in_editor', '');
+
+                // делаем окно редактора видимым и очищаем текст в нём
+
+                document.getElementById('editor').innerHTML = '';
+
+                document.getElementById('editor').style.display = "block";
+
+                // добавляем название документа в конец списка
+
+                $('<li></li>').addClass('tdItem')
+
+                    .attr('data-itemid', Mask + number_Id)
+
+                    .text(str).appendTo(List);
+
+                // меняем заголовок редактора
+
+                document.getElementById('h1_name').innerHTML = localStorage.getItem('tdl_' + N_store);
+
+            }
+
+        });
+
+        // при клике на названии документа — делаем его активным и даём с ним работать
+
+        $(document).on('click', '.tdItem', function (e) {
+
+            // находим документ, по которому кликнули
+
+            var jet = $(e.target);
+
+            // если при клике был нажат Atl
+
+            if (event.altKey) {
+
+                // то убираем документ из памяти
+
+                localStorage.removeItem(jet.attr('data-itemid'));
+
+                localStorage.removeItem(jet.attr('data-itemid')[4] + 'text_in_editor');
+
+                // очищаем и скрываем окно редактора
+
+                document.getElementById('editor').innerHTML = '';
+
+                document.getElementById('editor').style.display = "none";
+
+                // меняем заголовок редактора
+
+                document.getElementById('h1_name').innerHTML = 'Editor';
+
+                // и убираем документ из списка
+
+                jet.remove();
+
+                // выходим из функции, чтобы не обрабатывать обычный клик
+
+                return true;
+
+            }
+
+            // обрабатываем обычный клик — делаем документ активным
+
+            // получаем внутренний номер документа
+
+            N_store = jet.attr('data-itemid')[4];
+
+            // делаем окно редактора видимым и заполняем его содержимым из памяти
+
+            document.getElementById('editor').style.display = "block";
+
+            document.getElementById('editor').innerHTML = localStorage.getItem(N_store + 'text_in_editor');
+
+            // меняем заголовок редактора
+
+            document.getElementById('h1_name').innerHTML = localStorage.getItem('tdl_' + N_store);
+
+        })
+       
+    </script>
+
+    <!-- закончилось содержимое страницы -->
+
+</body>
+
+<!-- конец всего HTML-документа -->
+
+</html>

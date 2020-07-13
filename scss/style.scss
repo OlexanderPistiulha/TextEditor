@@ -1,0 +1,106 @@
+/*задаём общие параметры для всей страницы: шрифт и отступы*/
+body {
+    text-align: left;
+    color: white;
+    margin: 10;
+    font-family: Courier New, Courier;
+    font-size: 20px;
+    background-image: url(../img/background-image-html.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 0 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* оформляем окно редактора */
+.editorSheet {
+    min-height: 65vw;
+    border: solid;
+    border-width: 0px;
+    text-align: left;
+    background-color: white;
+    box-shadow: 6px 10px 9px 0px rgba(0, 0, 0, 0.75);
+    padding: 15px;
+    border-style: solid;
+    border-width: 1px;
+}
+
+/* стиль заголовка h1*/
+.h1-wrapp {
+    margin: 0 auto;
+    width: 50%;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.title {
+    font-size: 40px;
+    font-family: Tahoma;
+    font-weight: 900;
+    padding-bottom: 30px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* стиль заголовка h2*/
+.documents {
+    font-size: 25px;
+    font-family: Arial;
+    font-weight: 900;
+    //color: black;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* настраиваем внешний вид поля ввода*/
+input {
+    display: inline-block;
+    margin: 20px auto;
+    border: 2px solid #eee;
+    padding: 10px 20px;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 13px;
+}
+
+/*как будет выглядеть каждый элемент нашего списка документов*/
+.tdItem {
+    text-align: left;
+    padding: 10px;
+    cursor: default;
+    border-radius: 7px;
+    font-size: 16px;
+}
+
+/*что произойдёт, когда  курсор на название документа в списке*/
+.tdItem:hover {
+    background-color: lightblue;
+}
+
+.editorSheet {
+    color: rgba(0, 0, 0, 1);
+}
+
+
+button {
+    padding: 5px 13px;
+    background-color: rgb(107, 107, 107);
+    font: inherit;
+    color: white;
+    cursor: pointer;
+}
+
+.tools {
+    width: 100%;
+    background-color: rgb(60, 60, 60);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-radius: 7px;
+
+}
